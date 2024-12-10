@@ -79,7 +79,11 @@ Run `step5_retrieval_testing.py` to test retrieval and question-answering on the
 
 ---
 
+
 ## Outputs
 Processed outputs are saved in the **Output Files/** directory. Use the latest version files for accurate results.
 
+---
+## Output Files Link
+https://drive.google.com/file/d/1FPor8zpnXYHCUE6oyRmdgCp05BtZK4QZ/view?usp=sharing
 ---

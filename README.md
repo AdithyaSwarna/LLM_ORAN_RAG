@@ -78,8 +78,10 @@ Run `step4_vector_store.py` to create FAISS indices for the embeddings.
 Run `step5_retrieval_testing.py` to test retrieval and question-answering on the documents.
 
 ---
+## Input Files / Dataset
+https://drive.google.com/file/d/1IJHSt6wzksOw-2Pp5YyE_uShxrG3O6nT/view?usp=sharing
 
-
+---
 ## Outputs
 Processed outputs are saved in the **Output Files/** directory. Use the latest version files for accurate results.
 

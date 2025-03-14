@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>O-RAN Knowledge Base</title>
+    <style>
+      body {
+        background-color: #1e1e2e;
+        color: white;
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+      h1 {
+        margin-top: 20px;
+      }
+      #query-form {
+        margin-top: 20px;
+      }
+      input[type="text"] {
+        width: 60%;
+        padding: 10px;
+        font-size: 16px;
+        background-color: #2e2e3e;
+        color: white;
+        border: none;
+        border-radius: 5px;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .output-container {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+      }
+      .output-box {
+        width: 45%;
+        padding: 15px;
+        background-color: #2e2e3e;
+        border-radius: 5px;
+        text-align: left;
+        min-height: 150px;
+      }
+      .upload-container {
+        margin-top: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>O-RAN Knowledge Base</h1>
+
+    <form id="query-form">
+      <input
+        type="text"
+        id="query"
+        placeholder="Enter your question..."
+        required
+      />
+      <button type="submit">Submit</button>
+    </form>
+
+    <div class="output-container">
+      <div class="output-box">
+        <h3>🔍 RAG Output</h3>
+        <p id="rag-output">Awaiting input...</p>
+      </div>
+      <div class="output-box">
+        <h3>🧠 Llama Output</h3>
+        <p id="llama-output">Awaiting input...</p>
+      </div>
+    </div>
+
+    <div class="upload-container">
+      <h3>Upload Document</h3>
+      <input type="file" id="file-upload" />
+      <button onclick="uploadFile()">Upload</button>
+      <p id="upload-status"></p>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document
+          .getElementById("query-form")
+          .addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            let queryInput = document.getElementById("query");
+            let query = queryInput.value.trim();
+
+            if (!query) {
+              alert("Please enter a query.");
+              return;
+            }
+
+            let ragOutputBox = document.getElementById("rag-output");
+            let llamaOutputBox = document.getElementById("llama-output");
+
+            // Show "Processing..." while waiting for response
+            ragOutputBox.innerHTML = "Processing...";
+            llamaOutputBox.innerHTML = "Processing...";
+
+            fetch("/query", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ query: query }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                console.log("DEBUG: Response from Flask:", data); // Debugging log
+
+                // Ensure RAG and Llama outputs are updated correctly
+                ragOutputBox.innerHTML = data.rag_output
+                  ? data.rag_output
+                  : "⚠️ No RAG output.";
+                llamaOutputBox.innerHTML = data.llama_output
+                  ? data.llama_output
+                  : "⚠️ No Llama output.";
+              })
+              .catch((error) => {
+                console.error("Error fetching response:", error);
+                ragOutputBox.innerHTML = "❌ Error fetching RAG response.";
+                llamaOutputBox.innerHTML = "❌ Error fetching Llama response.";
+              });
+          });
+      });
+
+      function uploadFile() {
+        let fileInput = document.getElementById("file-upload");
+        let file = fileInput.files[0];
+
+        if (!file) {
+          alert("Please select a file to upload.");
+          return;
+        }
+
+        let formData = new FormData();
+        formData.append("file", file);
+
+        let uploadStatus = document.getElementById("upload-status");
+        uploadStatus.innerHTML = "Uploading...";
+
+        fetch("/upload", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("DEBUG: File Upload Response:", data);
+            uploadStatus.innerHTML = data.message
+              ? "✅ " + data.message
+              : "❌ Upload failed.";
+          })
+          .catch((error) => {
+            console.error("Upload Error:", error);
+            uploadStatus.innerHTML = "❌ Error uploading file.";
+          });
+      }
+    </script>
+  </body>
+</html>

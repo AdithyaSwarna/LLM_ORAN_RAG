@@ -26,12 +26,12 @@ def store_embeddings(input_filepath):
     print(f"\n📂 Processing File: {os.path.basename(input_filepath)}")
 
     for chunk in tqdm(embedding_data, desc=f"Storing {os.path.basename(input_filepath)}"):
-        chunk_id = f"{chunk['title']}_chunk_{chunk['chunk_index']}"  # <-- Ensure unique chunk ID
+        chunk_id = f"{chunk['title']}_chunk_{chunk['chunk_index']}"
         embedding_vector = chunk.get("embedding")
 
-        # Ensure the correct document name is stored in metadata
+        
         metadata = {
-            "title": chunk.get("title", "Unknown"),  # <-- Preserve title
+            "title": chunk.get("title", "Unknown"),
             "source": chunk.get("source_file", "Unknown"),
             "token_length": chunk.get("token_length", 0),
             "embedding_model": chunk.get("embedding_model", "Unknown Model"),
@@ -68,5 +68,5 @@ def process_uploaded_vector_store(uploaded_file_path):
         print(f"⚠️ ERROR: Embeddings file not found: {input_filepath}. Skipping vector storage.")
         return
 
-    # Store embeddings for this file
+    
     store_embeddings(input_filepath)

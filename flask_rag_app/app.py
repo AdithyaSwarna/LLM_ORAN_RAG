@@ -80,7 +80,7 @@ def query():
 
         return jsonify({
             "rag_output": structured_response,  # RAG pipeline output
-            "llama_output": generic_response  # Same for now, can modify later
+            "llama_output": generic_response
         })
 
     except Exception as e:

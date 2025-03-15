@@ -130,9 +130,6 @@ def query_retrieval(user_query):
     """Retrieves relevant document chunks and generates an LLM-based response."""
     retrieved_chunks = retrieve_relevant_chunks(user_query)
 
-    # if not retrieved_chunks:
-    #     return "⚠️ No relevant data retrieved."
-
     structured_response = generate_dynamic_prompt_using_llm(user_query, retrieved_chunks)
     generic_response = generate_generic_llm(user_query)
     return {structured_response, generic_response}
